@@ -94,10 +94,17 @@ Open http://localhost:3000 in your browser. Register an account and start using 
 
 ## Step 8 — Test the email cron manually
 
-After deploying, run this to trigger the cron manually:
+After deploying, run this to trigger the cron manually.
 
-```bash
-curl -H "Authorization: Bearer <your-CRON_SECRET>" https://<your-app>.vercel.app/api/cron/send-reminders
+**PowerShell (Windows):**
+```powershell
+Invoke-WebRequest -Uri "https://<your-app>.vercel.app/api/cron/send-reminders" `
+  -Headers @{ Authorization = "Bearer <your-CRON_SECRET>" }
+```
+
+**Or use curl.exe directly (avoids the PowerShell alias):**
+```powershell
+curl.exe -H "Authorization: Bearer <your-CRON_SECRET>" https://<your-app>.vercel.app/api/cron/send-reminders
 ```
 
 Expected response: `{"sent":N,"total":N}`

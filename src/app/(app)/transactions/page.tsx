@@ -5,12 +5,13 @@ import { TransactionTable } from "@/components/transactions/TransactionTable";
 import { NewTransactionButton } from "@/components/transactions/NewTransactionButton";
 
 interface Props {
-  searchParams: { month?: string; category?: string; person?: string };
+  searchParams: Promise<{ month?: string; category?: string; person?: string }>;
 }
 
 export default async function TransactionsPage({ searchParams }: Props) {
+  const { month: monthParam, category, person } = await searchParams;
   const supabase = await createClient();
-  const month = searchParams.month ?? currentYearMonth();
+  const month = monthParam ?? currentYearMonth();
   const { start, end } = monthRange(month);
 
   const [categoriesRes, personsRes] = await Promise.all([
@@ -25,8 +26,8 @@ export default async function TransactionsPage({ searchParams }: Props) {
     .lte("date", end)
     .order("date", { ascending: false });
 
-  if (searchParams.category) query = query.eq("category_id", searchParams.category);
-  if (searchParams.person) query = query.eq("person_id", searchParams.person);
+  if (category) query = query.eq("category_id", category);
+  if (person) query = query.eq("person_id", person);
 
   const { data: transactions } = await query;
 

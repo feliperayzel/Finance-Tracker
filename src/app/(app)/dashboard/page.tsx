@@ -8,12 +8,13 @@ import { format, subMonths } from "date-fns";
 import type { MonthlyAggregate } from "@/types/database";
 
 interface Props {
-  searchParams: { month?: string };
+  searchParams: Promise<{ month?: string }>;
 }
 
 export default async function DashboardPage({ searchParams }: Props) {
+  const { month: monthParam } = await searchParams;
   const supabase = await createClient();
-  const month = searchParams.month ?? currentYearMonth();
+  const month = monthParam ?? currentYearMonth();
   const { start, end } = monthRange(month);
 
   const sixMonthsAgo = format(subMonths(new Date(), 5), "yyyy-MM-01");
